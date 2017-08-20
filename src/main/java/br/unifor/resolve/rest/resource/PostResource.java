@@ -67,7 +67,6 @@ public class PostResource {
         return posts;
     }
 
-    @CrossOrigin
     @RequestMapping(value="/search", method = GET)
     public List<PostSimpleDTO> findByKeywords(Pageable pageable,
             @RequestParam("keywords") String keywords) {
@@ -139,9 +138,8 @@ public class PostResource {
         return PostDetailedDTO.fromPost(postRepository
                 .deleteById(id));
     }
-
-    @CrossOrigin
-    @RequestMapping(value = "/votes", method = POST)
+    
+    @RequestMapping(value = "/vote", method = POST)
     public PostDetailedDTO voteOnPost(@RequestBody VoteDTO vote) {
         User voter = userRepository.findByUsername(vote.getUsername());
         if (voter == null)

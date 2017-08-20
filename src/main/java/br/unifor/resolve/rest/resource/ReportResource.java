@@ -15,7 +15,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/report")
+@RequestMapping("/reports")
 public class ReportResource {
 
     private ReportRepository reportRepository;
