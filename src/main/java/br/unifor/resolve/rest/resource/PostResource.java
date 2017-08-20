@@ -138,7 +138,7 @@ public class PostResource {
         return PostDetailedDTO.fromPost(postRepository
                 .deleteById(id));
     }
-    
+
     @RequestMapping(value = "/vote", method = POST)
     public PostDetailedDTO voteOnPost(@RequestBody VoteDTO vote) {
         User voter = userRepository.findByUsername(vote.getUsername());

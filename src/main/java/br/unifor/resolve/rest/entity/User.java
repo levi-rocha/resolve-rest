@@ -35,13 +35,16 @@ public class User implements Serializable {
     @ManyToOne
     private Permission permission;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private Set<Post> posts;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private Set<Comment> comments;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private Set<Solution> solutions;
 
 	/* getters and setters */

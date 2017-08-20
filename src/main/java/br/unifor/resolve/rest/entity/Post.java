@@ -49,15 +49,15 @@ public class Post implements Serializable {
 	)
 	private Set<User> votes;
 
-	@OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE,
+	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL,
 			orphanRemoval = true)
 	private List<Comment> comments;
 
-	@OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE,
+	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL,
 			orphanRemoval = true)
 	private List<Solution> solutions;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE,
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL,
             orphanRemoval = true)
     private List<Report> reports;
 
