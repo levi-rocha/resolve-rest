@@ -12,5 +12,6 @@ public interface CommentRepository extends
 
     Comment deleteById(Long id);
 
+    Comment save(Comment comment);
 
 }

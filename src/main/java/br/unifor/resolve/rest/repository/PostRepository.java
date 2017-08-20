@@ -20,4 +20,6 @@ public interface PostRepository extends PagingAndSortingRepository<Post, Long> {
     List<Post> findByContentContainingIgnoreCaseOrTitleContainingIgnoreCase(
             String title, String content);
 
+    Post save(Post post);
+
 }
