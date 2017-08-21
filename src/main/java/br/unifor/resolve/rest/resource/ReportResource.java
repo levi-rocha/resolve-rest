@@ -1,9 +1,13 @@
 package br.unifor.resolve.rest.resource;
 
+import br.unifor.resolve.rest.entity.Post;
 import br.unifor.resolve.rest.entity.Report;
 import br.unifor.resolve.rest.dto.ReportUpdateFields;
 import br.unifor.resolve.rest.dto.ReportDTO;
+import br.unifor.resolve.rest.entity.User;
+import br.unifor.resolve.rest.repository.PostRepository;
 import br.unifor.resolve.rest.repository.ReportRepository;
+import br.unifor.resolve.rest.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +23,14 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 public class ReportResource {
 
     private ReportRepository reportRepository;
+    private UserRepository userRepository;
+    private PostRepository postRepository;
 
     @Autowired
-    public ReportResource(ReportRepository reportRepository) {
+    public ReportResource(ReportRepository reportRepository, UserRepository userRepository, PostRepository postRepository) {
         this.reportRepository = reportRepository;
+        this.userRepository = userRepository;
+        this.postRepository = postRepository;
     }
 
     @RequestMapping(method = GET)
@@ -44,6 +52,10 @@ public class ReportResource {
 
     @RequestMapping(method = POST)
     public ReportDTO insert(@RequestBody Report report) {
+        User author = userRepository.findByUsername(report.getAuthor().getUsername());
+        Post post = postRepository.findById(report.getPost().getId());
+        report.setAuthor(author);
+        report.setPost(post);
         return ReportDTO.fromReport(reportRepository.save(report));
     }
 

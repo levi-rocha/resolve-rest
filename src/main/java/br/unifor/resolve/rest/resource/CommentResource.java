@@ -3,7 +3,9 @@ package br.unifor.resolve.rest.resource;
 import br.unifor.resolve.rest.entity.Comment;
 import br.unifor.resolve.rest.dto.CommentUpdateFields;
 import br.unifor.resolve.rest.dto.CommentDTO;
+import br.unifor.resolve.rest.entity.User;
 import br.unifor.resolve.rest.repository.CommentRepository;
+import br.unifor.resolve.rest.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +21,12 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 public class CommentResource {
 
     private CommentRepository commentRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    public CommentResource(CommentRepository commentRepository) {
+    public CommentResource(CommentRepository commentRepository, UserRepository userRepository) {
         this.commentRepository = commentRepository;
+        this.userRepository = userRepository;
     }
 
     @RequestMapping(method = GET)
@@ -44,6 +48,9 @@ public class CommentResource {
 
     @RequestMapping(method = POST)
     public CommentDTO insert(@RequestBody Comment comment) {
+        User author = userRepository.findByUsername(
+                comment.getAuthor().getUsername());
+        comment.setAuthor(author);
         return CommentDTO.fromComment(commentRepository.save(comment));
     }
 

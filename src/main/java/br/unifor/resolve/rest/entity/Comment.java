@@ -27,7 +27,7 @@ public class Comment implements Serializable {
 	@Column(nullable = false)
 	private String content;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	private User author;
 
 	@ManyToOne

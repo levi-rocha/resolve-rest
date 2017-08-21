@@ -3,7 +3,9 @@ package br.unifor.resolve.rest.resource;
 import br.unifor.resolve.rest.entity.Solution;
 import br.unifor.resolve.rest.dto.SolutionUpdateFields;
 import br.unifor.resolve.rest.dto.SolutionDTO;
+import br.unifor.resolve.rest.entity.User;
 import br.unifor.resolve.rest.repository.SolutionRepository;
+import br.unifor.resolve.rest.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +21,12 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 public class SolutionResource {
 
     private SolutionRepository solutionRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    public SolutionResource(SolutionRepository solutionRepository) {
+    public SolutionResource(SolutionRepository solutionRepository, UserRepository userRepository) {
         this.solutionRepository = solutionRepository;
+        this.userRepository = userRepository;
     }
 
     @RequestMapping(method = GET)
@@ -44,6 +48,8 @@ public class SolutionResource {
 
     @RequestMapping(method = POST)
     public SolutionDTO insert(@RequestBody Solution solution) {
+        User author = userRepository.findByUsername(solution.getAuthor().getUsername());
+        solution.setAuthor(author);
         return SolutionDTO.fromSolution(solutionRepository.save(solution));
     }
 
