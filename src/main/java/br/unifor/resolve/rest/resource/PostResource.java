@@ -117,6 +117,9 @@ public class PostResource {
 
     @RequestMapping(method = POST)
     public PostDetailedDTO insert(@RequestBody Post post) {
+	    User author = userRepository.findByUsername(
+	            post.getAuthor().getUsername());
+	    post.setAuthor(author);
         return PostDetailedDTO.fromPost(postRepository.save(post));
     }
 

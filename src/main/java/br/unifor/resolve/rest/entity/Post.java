@@ -32,7 +32,7 @@ public class Post implements Serializable {
 	@Column(nullable = false, length = 9999)
 	private String content;
 
-	@ManyToOne(cascade = CascadeType.DETACH)
+	@ManyToOne
 	private User author;
 
 	@ManyToMany
