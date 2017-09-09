@@ -71,9 +71,8 @@ public class ReportResource {
     }
 
     @RequestMapping(value = "/{id}", method = DELETE)
-    public ReportDTO delete(@PathVariable Long id) {
-        return ReportDTO.fromReport(reportRepository
-                .deleteById(id));
+    public Long delete(@PathVariable Long id) {
+        return reportRepository.deleteById(id);
     }
 
 }

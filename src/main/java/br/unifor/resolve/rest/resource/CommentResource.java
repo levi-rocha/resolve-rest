@@ -66,9 +66,8 @@ public class CommentResource {
     }
 
     @RequestMapping(value = "/{id}", method = DELETE)
-    public CommentDTO delete(@PathVariable Long id) {
-        return CommentDTO.fromComment(commentRepository
-                .deleteById(id));
+    public Long delete(@PathVariable Long id) {
+        return commentRepository.deleteById(id);
     }
 
 }

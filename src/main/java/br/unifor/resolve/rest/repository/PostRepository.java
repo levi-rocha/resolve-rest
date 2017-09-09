@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -13,7 +14,8 @@ public interface PostRepository extends PagingAndSortingRepository<Post, Long> {
 
     Post findById(Long id);
 
-    Post deleteById(Long id);
+    @Transactional
+    Long deleteById(Long id);
 
     Page<Post> findAll(Pageable pageable);
 

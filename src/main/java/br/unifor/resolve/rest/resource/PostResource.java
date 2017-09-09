@@ -10,6 +10,7 @@ import br.unifor.resolve.rest.repository.PostRepository;
 import br.unifor.resolve.rest.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.data
@@ -137,9 +138,8 @@ public class PostResource {
     }
 
     @RequestMapping(value = "/{id}", method = DELETE)
-    public PostDetailedDTO delete(@PathVariable Long id) {
-        return PostDetailedDTO.fromPost(postRepository
-                .deleteById(id));
+    public Long delete(@PathVariable Long id) {
+        return postRepository.deleteById(id);
     }
 
     @RequestMapping(value = "/vote", method = POST)

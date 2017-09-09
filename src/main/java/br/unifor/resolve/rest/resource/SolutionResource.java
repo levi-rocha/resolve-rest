@@ -65,9 +65,8 @@ public class SolutionResource {
     }
 
     @RequestMapping(value = "/{id}", method = DELETE)
-    public SolutionDTO delete(@PathVariable Long id) {
-        return SolutionDTO.fromSolution(solutionRepository
-                .deleteById(id));
+    public Long delete(@PathVariable Long id) {
+        return solutionRepository.deleteById(id);
     }
 
 }

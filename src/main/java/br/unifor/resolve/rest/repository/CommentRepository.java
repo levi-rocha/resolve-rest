@@ -3,6 +3,7 @@ package br.unifor.resolve.rest.repository;
 import br.unifor.resolve.rest.entity.Comment;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.transaction.annotation.Transactional;
 
 @RepositoryRestResource(collectionResourceRel = "comment", exported = false)
 public interface CommentRepository extends
@@ -10,7 +11,8 @@ public interface CommentRepository extends
 
     Comment findById(Long id);
 
-    Comment deleteById(Long id);
+    @Transactional
+    Long deleteById(Long id);
 
     Comment save(Comment comment);
 

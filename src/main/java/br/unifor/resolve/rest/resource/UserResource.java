@@ -67,9 +67,8 @@ public class UserResource {
     }
 
     @RequestMapping(value = "/{username}", method = DELETE)
-    public UserDetailedDTO delete(@PathVariable String username) {
-        return UserDetailedDTO.fromUser(userRepository
-                .deleteByUsername(username));
+    public Long delete(@PathVariable String username) {
+        return userRepository.deleteByUsername(username);
     }
 
 }
