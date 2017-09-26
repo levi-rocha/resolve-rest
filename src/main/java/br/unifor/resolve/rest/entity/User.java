@@ -19,7 +19,7 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     @Size(min = 3, max = 20)
     private String username;
 
@@ -28,7 +28,7 @@ public class User implements Serializable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     @Email
     private String email;
 
