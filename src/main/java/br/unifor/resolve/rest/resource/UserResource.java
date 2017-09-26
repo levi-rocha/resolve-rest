@@ -43,6 +43,11 @@ public class UserResource {
                 userRepository.findByUsername(username));
     }
 
+    @RequestMapping(value = "/verifyEmailTaken", method = GET)
+    public boolean emailIsTaken(@RequestParam("email") String email) {
+        return userRepository.existsByEmail(email);
+    }
+
     @RequestMapping(method = POST)
     public UserDetailedDTO insert(@RequestBody User user) {
         return UserDetailedDTO.fromUser(userRepository.save(user));
