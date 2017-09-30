@@ -37,77 +37,30 @@ public class PostResource {
 
 	@RequestMapping(method = GET)
     public List<PostSimpleDTO> findAll(Pageable pageable) {
-	    if (pageable != null && pageable.getSort() != null) {
-            String sort = pageable.getSort().toString();
-            if (sort != null && sort.toLowerCase().contains("votes")) {
-                Iterable<Post> all = postRepository.findAll();
-                List<PostSimpleDTO> dtos = new ArrayList<>();
-                for (Post p : all) {
-                    dtos.add(PostSimpleDTO.fromPost(p));
-                }
-                Collections.sort(dtos);
-                int size = pageable.getPageSize();
-                int offset = pageable.getOffset();
-                if (size+offset > dtos.size()) {
-                    size = dtos.size()-offset;
-                }
-                List<PostSimpleDTO> paged = new ArrayList<>();
-                for (int i = 0; i < size; i++) {
-                    paged.add(dtos.get(i+offset));
-                }
-                return paged;
-            }
-        }
-	    Page<Post> page = postRepository.findAll(pageable);
-	    if (page == null)
-	        return null;
-        List<PostSimpleDTO> posts = new ArrayList<>();
-	    for (Post p : page.getContent()) {
-            posts.add(PostSimpleDTO.fromPost(p));
-        }
-        return posts;
+	    if (isVoteSort(pageable))
+            return dtosSortedByVotes(pageable, postRepository.findAll());
+        else
+            return dtosFromPage(postRepository.findAll(pageable));
     }
 
     @RequestMapping(value="/search", method = GET)
     public List<PostSimpleDTO> findByKeywords(Pageable pageable,
             @RequestParam("keywords") String keywords) {
-        Set<Post> allMatches = new HashSet<>();
+        List<Post> allMatches = new ArrayList<>();
         for (String key : keywords.split("[,]")) {
             List<Post> matches = postRepository
-                    .findByContentContainingIgnoreCaseOrTitleContainingIgnoreCase(key, key);
+                    .findDistinctByContentContainingIgnoreCaseOrTitleContainingIgnoreCase(key, key);
             for (Post p : matches)
                 allMatches.add(p);
         }
-        List<PostSimpleDTO> dtos = new ArrayList<>();
-        for (Post p : allMatches)
-            dtos.add(PostSimpleDTO.fromPost(p));
-        int size = 20;
-        int offset = 0;
-        if (pageable != null) {
-            size = pageable.getPageSize();
-            offset = pageable.getOffset();
-            if (pageable.getSort() != null && pageable.getSort().toString()
-                    .toLowerCase().contains("date")) {
-                Collections.sort(dtos, new Comparator<PostSimpleDTO>() {
-                    @Override
-                    public int compare(PostSimpleDTO o1, PostSimpleDTO o2) {
-                        return o1.getDate().compareTo(o2.getDate());
-                    }
-                });
-            } else {
-                Collections.sort(dtos);
-            }
-        } else {
-            Collections.sort(dtos);
+        if (isVoteSort(pageable))
+            return dtosSortedByVotes(pageable, allMatches);
+        else {
+            List<Long> ids = new ArrayList<>();
+            for (Post p : allMatches)
+                ids.add(p.getId());
+            return dtosFromPage(postRepository.findByIdIn(pageable, ids));
         }
-        if (size+offset > dtos.size()) {
-            size = dtos.size()-offset;
-        }
-        List<PostSimpleDTO> paged = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            paged.add(dtos.get(i+offset));
-        }
-        return paged;
     }
 
     @RequestMapping(value = "/{id}", method = GET)
@@ -160,7 +113,40 @@ public class PostResource {
     @RequestMapping(value="/byAuthor/{id}", method = GET)
     public List<PostSimpleDTO> findByAuthor(Pageable pageable,
                                            @PathVariable Long id) {
-        Page<Post> page = postRepository.findByAuthorId(pageable, id);
+        if (isVoteSort(pageable))
+            return dtosSortedByVotes(pageable, postRepository
+                    .findDistinctByAuthorId(id));
+        else
+            return dtosFromPage(postRepository
+                    .findDistinctByAuthorId(pageable, id));
+    }
+
+    private boolean isVoteSort(Pageable pageable) {
+        return (pageable != null && pageable.getSort() != null
+                && pageable.getSort().toString().toLowerCase()
+                .contains("votes"));
+    }
+
+    private List<PostSimpleDTO> dtosSortedByVotes(Pageable pageable,
+                                            Iterable<Post> toBeSorted) {
+        List<PostSimpleDTO> dtos = new ArrayList<>();
+        for (Post p : toBeSorted) {
+            dtos.add(PostSimpleDTO.fromPost(p));
+        }
+        Collections.sort(dtos);
+        int size = pageable.getPageSize();
+        int offset = pageable.getOffset();
+        if (size+offset > dtos.size()) {
+            size = dtos.size()-offset;
+        }
+        List<PostSimpleDTO> paged = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            paged.add(dtos.get(i+offset));
+        }
+        return paged;
+    }
+
+    private List<PostSimpleDTO> dtosFromPage(Page<Post> page) {
         if (page == null)
             return null;
         List<PostSimpleDTO> posts = new ArrayList<>();
@@ -169,81 +155,4 @@ public class PostResource {
         }
         return posts;
     }
-
-	/*
-
-	@RequestMapping(value = "/{id}", method = GET)
-	public Response findPostById(@PathVariable(value="id") Long id) {
-		try {
-			Post post = postRepository.findById(id);
-			PostDetailedDTO data = PostDetailedDTO.fromPost(post);
-			return Response.ok(data, MediaType.APPLICATION_JSON).build();
-		} catch (ChangeSetPersister.NotFoundException e) {
-			return Response.status(Response.Status.NOT_FOUND)
-					.entity(e.getMessage()).build();
-		}
-	}
-
-	public Response listPosts(@QueryParam("q") int quantity,
-							  @QueryParam("c") String criteria,
-							  @QueryParam("s") int start,
-							  @QueryParam("k") String keywords) {
-		List<PostSimpleDTO> data = postBO.listPosts(
-				quantity, start, criteria, keywords);
-		return Response.ok(data, MediaType.APPLICATION_JSON).build();
-	}
-
-	public Response addPost(Post post) {
-		try {
-			PostDetailedDTO data = postBO.addPost(post);
-			return Response.ok(data, MediaType.APPLICATION_JSON).build();
-		} catch (InvalidArgumentException e) {
-			return Response.status(422).entity(e.getMessage()).build();
-		} catch (NotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(e.getMessage()).build();
-        }
-    }
-
-	public Response updatePost(Post post) {
-		try {
-			PostDetailedDTO data = postBO.updatePost(post);
-			return Response.ok(data, MediaType.APPLICATION_JSON).build();
-		} catch (NotFoundException e) {
-			return Response.status(Response.Status.NOT_FOUND)
-					.entity(e.getMessage()).build();
-		} catch (ServerException e) {
-			return Response.serverError().entity(e.getMessage()).build();
-		} catch (InvalidArgumentException e) {
-			return Response.status(422).entity(e.getMessage()).build();
-		}
-	}
-
-	public Response removePost(@PathParam("id") Long id) {
-		try {
-			PostDetailedDTO data = postBO.removePost(id);
-			return Response.ok(data, MediaType.APPLICATION_JSON).build();
-		} catch (NotFoundException e) {
-			return Response.status(Response.Status.NOT_FOUND)
-					.entity(e.getMessage()).build();
-		} catch (ServerException e) {
-			return Response.serverError().entity(e.getMessage()).build();
-		}
-	}
-
-	public Response voteOnPost(VoteDTO vote) {
-		try {
-			PostDetailedDTO data = postBO.voteOnPost(vote);
-			return Response.ok(data, MediaType.APPLICATION_JSON).build();
-		} catch (NotFoundException e) {
-			return Response.status(Response.Status.NOT_FOUND)
-					.entity(e.getMessage()).build();
-		} catch (ServerException e) {
-			return Response.serverError().entity(e.getMessage()).build();
-		} catch (InvalidArgumentException e) {
-			return Response.status(422).entity(e.getMessage()).build();
-		}
-	}
-
-	*/
 }
