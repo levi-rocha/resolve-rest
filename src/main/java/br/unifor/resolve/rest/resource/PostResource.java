@@ -157,6 +157,19 @@ public class PostResource {
         return PostDetailedDTO.fromPost(voted);
     }
 
+    @RequestMapping(value="/byAuthor/{id}", method = GET)
+    public List<PostSimpleDTO> findByAuthor(Pageable pageable,
+                                           @PathVariable Long id) {
+        Page<Post> page = postRepository.findByAuthorId(pageable, id);
+        if (page == null)
+            return null;
+        List<PostSimpleDTO> posts = new ArrayList<>();
+        for (Post p : page.getContent()) {
+            posts.add(PostSimpleDTO.fromPost(p));
+        }
+        return posts;
+    }
+
 	/*
 
 	@RequestMapping(value = "/{id}", method = GET)

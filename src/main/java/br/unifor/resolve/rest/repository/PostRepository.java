@@ -24,4 +24,6 @@ public interface PostRepository extends PagingAndSortingRepository<Post, Long> {
 
     Post save(Post post);
 
+    Page<Post> findByAuthorId(Pageable pageable, Long authorId);
+
 }
