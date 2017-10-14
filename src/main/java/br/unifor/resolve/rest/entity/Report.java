@@ -13,7 +13,8 @@ public class Report implements Serializable {
 	private static final long serialVersionUID = -2738651723891695230L;
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reports_seq_gen")
+	@SequenceGenerator(name = "reports_seq_gen", sequenceName = "reports_id_seq")
 	private Long id;
 
 	@Column(nullable = false)

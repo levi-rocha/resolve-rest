@@ -103,4 +103,3 @@ INSERT INTO comments (id, content, date, author_id, post_id) VALUES (62,'Beep bo
 INSERT INTO comments (id, content, date, author_id, post_id) VALUES (63,'Beep boop',now(),38,22);
 INSERT INTO comments (id, content, date, author_id, post_id) VALUES (64,'Beep boop',now(),38,21);
 INSERT INTO comments (id, content, date, author_id, post_id) VALUES (65,'Beep boop',now(),38,15);
-ALTER SEQUENCE hibernate_sequence RESTART WITH 101;
