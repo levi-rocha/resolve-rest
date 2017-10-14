@@ -25,7 +25,8 @@ public class Permission implements Serializable {
 	}
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "permissions_seq_gen")
+	@SequenceGenerator(name = "permissions_seq_gen", sequenceName = "permissions_id_seq")
 	private Long id;
 
 	@Column(nullable = false,unique = true)

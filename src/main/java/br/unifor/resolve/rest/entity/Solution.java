@@ -19,7 +19,8 @@ public class Solution implements Serializable {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "solutions_seq_gen")
+    @SequenceGenerator(name = "solutions_seq_gen", sequenceName = "solutions_id_seq")
     private Long id;
 
     @Column(nullable = false)
