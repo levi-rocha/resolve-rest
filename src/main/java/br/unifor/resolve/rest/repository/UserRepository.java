@@ -18,7 +18,7 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
     User save(User user);
 
     @Transactional
-    Long deleteByUsername(String username);
+    Long deleteById(long id);
 
     User findByUsernameAndPassword(String username, String password);
 
