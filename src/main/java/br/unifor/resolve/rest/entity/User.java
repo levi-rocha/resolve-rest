@@ -34,6 +34,7 @@ public class User implements Serializable {
     private String email;
 
     @ManyToOne
+    @Column(nullable = false)
     private Permission permission;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL,

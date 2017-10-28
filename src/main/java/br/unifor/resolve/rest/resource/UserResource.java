@@ -36,11 +36,11 @@ public class UserResource {
         return dtos;
     }
 
-    @RequestMapping(value = "/{username}", method = GET)
-    public UserDetailedDTO findByUsername(
-            @PathVariable String username) {
+    @RequestMapping(value = "/{id}", method = GET)
+    public UserDetailedDTO findById(
+            @PathVariable long id) {
         return UserDetailedDTO.fromUser(
-                userRepository.findByUsername(username));
+                userRepository.findOne(id));
     }
 
     @RequestMapping(value = "/verifyEmailTaken", method = GET)
@@ -53,10 +53,10 @@ public class UserResource {
         return UserDetailedDTO.fromUser(userRepository.save(user));
     }
 
-    @RequestMapping(value = "/{username}", method = PATCH)
+    @RequestMapping(value = "/{id}", method = PATCH)
     public UserDetailedDTO update(@RequestBody UserUpdateFields user,
-                                  @PathVariable String username) {
-        User found = userRepository.findByUsername(username);
+                                  @PathVariable long id) {
+        User found = userRepository.findOne(id);
         if (found == null)
             return null;
         if (user.getUsername() != null)
@@ -71,9 +71,9 @@ public class UserResource {
         return UserDetailedDTO.fromUser(userRepository.save(found));
     }
 
-    @RequestMapping(value = "/{username}", method = DELETE)
-    public Long delete(@PathVariable String username) {
-        return userRepository.deleteByUsername(username);
+    @RequestMapping(value = "/{id}", method = DELETE)
+    public Long delete(@PathVariable long id) {
+        return userRepository.deleteById(id);
     }
 
 }
