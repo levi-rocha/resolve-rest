@@ -71,8 +71,8 @@ public class PostResource {
 
     @RequestMapping(method = POST)
     public PostDetailedDTO insert(@RequestBody Post post) {
-	    User author = userRepository.findByUsername(
-	            post.getAuthor().getUsername());
+	    User author = userRepository.findById(
+	            post.getAuthor().getId());
 	    post.setAuthor(author);
         return PostDetailedDTO.fromPost(postRepository.save(post));
     }
@@ -97,7 +97,7 @@ public class PostResource {
 
     @RequestMapping(value = "/vote", method = POST)
     public PostDetailedDTO voteOnPost(@RequestBody VoteDTO vote) {
-        User voter = userRepository.findByUsername(vote.getUsername());
+        User voter = userRepository.findById(vote.getUserId());
         if (voter == null)
             return null;
         Post voted = postRepository.findById(vote.getPostId());

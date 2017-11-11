@@ -6,26 +6,26 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Credentials {
 
-    private String username, password;
+    private String email, password;
 
     public Credentials() {
     }
 
-    public Credentials(String username, String password) {
-        this.username = username;
+    public Credentials(String email, String password) {
+        this.email = email;
         this.password = MD5Encrypter.encrypt(password);
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setPassword(String password) {

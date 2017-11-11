@@ -13,18 +13,16 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
 
     Page<User> findAll(Pageable pageable);
 
-    User findByUsername(@Param("username") String username);
-
     User save(User user);
 
     @Transactional
     Long deleteById(long id);
 
-    User findByUsernameAndPassword(String username, String password);
-
     User findByEmailAndPassword(String email, String password);
 
     User findByEmail(String email);
+
+    User findById(long id);
 
     boolean existsByEmail(String email);
 

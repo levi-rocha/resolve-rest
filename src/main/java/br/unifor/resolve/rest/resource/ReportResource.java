@@ -52,7 +52,7 @@ public class ReportResource {
 
     @RequestMapping(method = POST)
     public ReportDTO insert(@RequestBody Report report) {
-        User author = userRepository.findByUsername(report.getAuthor().getUsername());
+        User author = userRepository.findById(report.getAuthor().getId());
         Post post = postRepository.findById(report.getPost().getId());
         report.setAuthor(author);
         report.setPost(post);

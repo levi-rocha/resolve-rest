@@ -48,8 +48,8 @@ public class CommentResource {
 
     @RequestMapping(method = POST)
     public CommentDTO insert(@RequestBody Comment comment) {
-        User author = userRepository.findByUsername(
-                comment.getAuthor().getUsername());
+        User author = userRepository.findById(
+                comment.getAuthor().getId());
         comment.setAuthor(author);
         return CommentDTO.fromComment(commentRepository.save(comment));
     }

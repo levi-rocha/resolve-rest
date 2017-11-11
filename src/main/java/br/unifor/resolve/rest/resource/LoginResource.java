@@ -1,10 +1,8 @@
 package br.unifor.resolve.rest.resource;
 
 import br.unifor.resolve.rest.dto.Credentials;
-import br.unifor.resolve.rest.dto.EmailCredentials;
 import br.unifor.resolve.rest.dto.UserSimpleDTO;
 import br.unifor.resolve.rest.entity.User;
-import br.unifor.resolve.rest.dto.UserDetailedDTO;
 import br.unifor.resolve.rest.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,7 +24,7 @@ public class LoginResource {
     }
 
     @RequestMapping(value = "/login", method = POST)
-    public UserSimpleDTO login(@RequestBody EmailCredentials credentials) {
+    public UserSimpleDTO login(@RequestBody Credentials credentials) {
         User user = repository.findByEmailAndPassword(
                 credentials.getEmail(), credentials.getPassword());
         if (user != null)

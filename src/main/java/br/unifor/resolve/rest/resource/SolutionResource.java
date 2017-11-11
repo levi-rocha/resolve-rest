@@ -48,7 +48,7 @@ public class SolutionResource {
 
     @RequestMapping(method = POST)
     public SolutionDTO insert(@RequestBody Solution solution) {
-        User author = userRepository.findByUsername(solution.getAuthor().getUsername());
+        User author = userRepository.findById(solution.getAuthor().getId());
         solution.setAuthor(author);
         return SolutionDTO.fromSolution(solutionRepository.save(solution));
     }
